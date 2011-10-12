@@ -5,12 +5,19 @@ import scalate.ScalateSupport
 class TodoServlet extends ScalatraServlet with ScalateSupport {
 
   get("/") {
-    <html>
-      <body>
-        <h1>Hello, world!</h1>
-        Say <a href="hello-scalate">hello to Scalate</a>.
-      </body>
-    </html>
+    // list tasks
+  }
+
+  get("/add") {
+    // form for adding task
+  }
+
+  post("/add") {
+    // add the task
+  }
+
+  post("/mark-complete/:id") {
+    // mark as complete
   }
 
   notFound {
