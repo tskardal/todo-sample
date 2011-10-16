@@ -1,3 +1,5 @@
+package no.bouvet.todolist
+
 import org.scalatra._
 import java.net.URL
 import scalate.ScalateSupport
@@ -6,6 +8,13 @@ class TodoServlet extends ScalatraServlet with ScalateSupport {
 
   get("/") {
     // list tasks
+    contentType = "text/html"
+    scaml("index", "tasks" -> createTasks, "title" -> "lalals")
+  }
+
+  def createTasks() : List[Task] = {
+    val tasks = List(new Task(1, "Test", false), new Task(2, "Other test", true))
+    tasks
   }
 
   get("/add") {

@@ -1,0 +1,10 @@
+- attributes("title") = "Todo - List of all tasks"
+- import no.bouvet.todolist._
+-@ val tasks: List[Task]
+
+%ul
+    - for(t <- tasks)
+        %li(class={if (t.complete) "complete" else "pending"})
+            t.title
+            - if(!t.complete)
+                %a(href={uri("/mark-complete/" + t.id)}) Mark complete
