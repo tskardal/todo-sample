@@ -19,15 +19,10 @@ class TodoServlet extends ScalatraServlet with ScalateSupport with UrlSupport {
 
   get("/") {
     // list tasks
-    contentType = "text/html"
-    scaml("index", "tasks" -> createTasks)
-  }
-
-  def createTasks() : List[Task] = {
     SessionFactory.newSession.bindToCurrentThread
-    var tasks: List[Task] = List[Task]()
-    tasks = from(TaskDB.tasks)(s => select(s)).toList
-    tasks
+    val tasks = from(TaskDB.tasks)(s => select(s)).toList
+    contentType = "text/html"
+    scaml("index", "tasks" -> tasks)
   }
 
   get("/add") {
