@@ -1,0 +1,6 @@
+- attributes("title") = "Add a new task"
+
+%form(action={uri("/add")} method="post")
+    %label(for="title") Title
+    %input(name="title")
+    %input(type="submit" value="Add")

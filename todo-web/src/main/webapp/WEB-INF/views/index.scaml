@@ -2,6 +2,7 @@
 - import no.bouvet.todolist._
 -@ val tasks: List[Task]
 
+%a(href={uri("/add")}) Add
 %ul
     - for(t <- tasks)
         %li(class={if (t.complete) "complete" else "pending"})

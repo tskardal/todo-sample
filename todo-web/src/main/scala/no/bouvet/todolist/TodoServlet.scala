@@ -25,22 +25,29 @@ class TodoServlet extends ScalatraServlet with ScalateSupport with UrlSupport {
 
   def createTasks() : List[Task] = {
     SessionFactory.newSession.bindToCurrentThread
-
     var tasks: List[Task] = List[Task]()
     tasks = from(TaskDB.tasks)(s => select(s)).toList
     tasks
   }
 
   get("/add") {
-    // form for adding task
+    contentType = "text/html"
+    scaml("task-form")
   }
 
   post("/add") {
     // add the task
+    SessionFactory.newSession.bindToCurrentThread
+    transaction {
+      val t = new Task(0, params("title"), false)
+      TaskDB.tasks.insert(t)
+    }
+    redirect(url("/"))
   }
 
   post("/mark-complete/:id") {
     // mark as complete
+    SessionFactory.newSession.bindToCurrentThread
     val taskId = params("id").toLong
     transaction {
       update(TaskDB.tasks) (t =>
