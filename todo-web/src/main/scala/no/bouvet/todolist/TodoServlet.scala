@@ -20,7 +20,7 @@ class TodoServlet extends ScalatraServlet with ScalateSupport with UrlSupport {
   get("/") {
     // list tasks
     contentType = "text/html"
-    scaml("index", "tasks" -> createTasks, "title" -> "lalals")
+    scaml("index", "tasks" -> createTasks)
   }
 
   def createTasks() : List[Task] = {
