@@ -5,6 +5,7 @@
 %ul
     - for(t <- tasks)
         %li(class={if (t.complete) "complete" else "pending"})
-            t.title
+            #{t.title}
             - if(!t.complete)
-                %a(href={uri("/mark-complete/" + t.id)}) Mark complete
+                %form(action={uri("mark-complete/" + t.id)} method="post")
+                    %input(type="submit" value="Mark complete")

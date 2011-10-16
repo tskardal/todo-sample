@@ -7,7 +7,7 @@ import PrimitiveTypeMode._
 import scalate.ScalateSupport
 import java.sql.DriverManager
 
-class TodoServlet extends ScalatraServlet with ScalateSupport {
+class TodoServlet extends ScalatraServlet with ScalateSupport with UrlSupport {
 
   Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
   SessionFactory.concreteFactory = Some(()=>
@@ -27,9 +27,7 @@ class TodoServlet extends ScalatraServlet with ScalateSupport {
     SessionFactory.newSession.bindToCurrentThread
 
     var tasks: List[Task] = List[Task]()
-    transaction {
-      tasks = from(TaskDB.tasks)(s => select(s)).toList
-    }
+    tasks = from(TaskDB.tasks)(s => select(s)).toList
     tasks
   }
 
@@ -43,9 +41,20 @@ class TodoServlet extends ScalatraServlet with ScalateSupport {
 
   post("/mark-complete/:id") {
     // mark as complete
+    val taskId = params("id").toLong
+    transaction {
+      update(TaskDB.tasks) (t =>
+        where(t.id === taskId)
+        set(t.complete := true)
+      )
+    }
+    println("update done")
+    redirect(url("/"))
   }
 
   notFound {
     <h1>Not found</h1>
   }
+
+  protected def contextPath = request.getContextPath
 }

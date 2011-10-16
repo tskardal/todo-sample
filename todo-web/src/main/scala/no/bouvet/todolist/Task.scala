@@ -1,15 +1,17 @@
 package no.bouvet.todolist
 
-import org.squeryl.{Session, SessionFactory, Schema}
 import org.squeryl.adapters.DerbyAdapter
 import java.sql._
+import org.squeryl.{KeyedEntity, Session, SessionFactory, Schema}
 
-class Task(val id: Int, val title: String, val complete: Boolean) {
+class Task(val id: Long, var title: String, var complete: Boolean) extends KeyedEntity[Long]
+{
   def this() = this(0, "", false)
 }
 
 object TaskDB extends Schema {
   val tasks = table[Task]
+  drop
   create
   printDdl
 
