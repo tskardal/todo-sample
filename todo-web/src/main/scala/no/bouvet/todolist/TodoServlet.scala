@@ -1,10 +1,21 @@
 package no.bouvet.todolist
 
 import org.scalatra._
-import java.net.URL
+import org.squeryl._
+import adapters.DerbyAdapter
+import PrimitiveTypeMode._
 import scalate.ScalateSupport
+import java.sql.DriverManager
 
 class TodoServlet extends ScalatraServlet with ScalateSupport {
+
+  Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+  SessionFactory.concreteFactory = Some(()=>
+    Session.create(
+      DriverManager.getConnection("jdbc:derby:todolist;create=true"),
+      new DerbyAdapter
+    )
+  )
 
   get("/") {
     // list tasks
@@ -13,7 +24,12 @@ class TodoServlet extends ScalatraServlet with ScalateSupport {
   }
 
   def createTasks() : List[Task] = {
-    val tasks = List(new Task(1, "Test", false), new Task(2, "Other test", true))
+    SessionFactory.newSession.bindToCurrentThread
+
+    var tasks: List[Task] = List[Task]()
+    transaction {
+      tasks = from(TaskDB.tasks)(s => select(s)).toList
+    }
     tasks
   }
 
@@ -30,10 +46,6 @@ class TodoServlet extends ScalatraServlet with ScalateSupport {
   }
 
   notFound {
-    // Try to render a ScalateTemplate if no route matched
-    findTemplate(requestPath) map { path =>
-      contentType = "text/html"
-      layoutTemplate(path)
-    } orElse serveStaticResource() getOrElse resourceNotFound() 
+    <h1>Not found</h1>
   }
 }
