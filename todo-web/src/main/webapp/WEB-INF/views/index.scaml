@@ -8,5 +8,6 @@
         %li(class={if (t.complete) "complete" else "pending"})
             #{t.title}
             - if(!t.complete)
-                %form(action={uri("mark-complete/" + t.id)} method="post")
-                    %input(type="submit" value="Mark complete")
+                [
+                %a(class="mark-complete" href={uri("mark-complete/" + t.id)}) Complete
+                ]

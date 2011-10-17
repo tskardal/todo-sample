@@ -40,7 +40,7 @@ class TodoServlet extends ScalatraServlet with ScalateSupport with UrlSupport {
     redirect(url("/"))
   }
 
-  post("/mark-complete/:id") {
+  get("/mark-complete/:id") {
     // mark as complete
     SessionFactory.newSession.bindToCurrentThread
     val taskId = params("id").toLong
@@ -50,7 +50,6 @@ class TodoServlet extends ScalatraServlet with ScalateSupport with UrlSupport {
         set(t.complete := true)
       )
     }
-    println("update done")
     redirect(url("/"))
   }
 
