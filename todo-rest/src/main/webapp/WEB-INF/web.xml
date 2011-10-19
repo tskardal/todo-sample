@@ -5,7 +5,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 	<servlet>
 		<servlet-name>scalatra</servlet-name>
 		<servlet-class>
-			TodoServlet
+			no.bouvet.todolist.TodoServlet
 		</servlet-class>
 	</servlet>
 
@@ -13,6 +13,11 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 		<servlet-name>scalatra</servlet-name>
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/static/*</url-pattern>
+    </servlet-mapping>
 	
 	<servlet-mapping>
                 <servlet-name>default</servlet-name>

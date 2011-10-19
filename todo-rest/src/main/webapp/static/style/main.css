@@ -1,0 +1,11 @@
+.complete {
+    text-decoration: line-through;
+}
+
+a.mark-complete {
+    text-decoration: none;
+}
+
+a.mark-complete:hover {
+    text-decoration: underline;
+}
