@@ -1,28 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-	<servlet>
-		<servlet-name>scalatra</servlet-name>
-		<servlet-class>
-			no.bouvet.todolist.TodoServlet
-		</servlet-class>
-	</servlet>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+    <servlet>
+        <servlet-name>scalatra</servlet-name>
+        <servlet-class>
+            no.bouvet.todolist.TodoServlet
+        </servlet-class>
+    </servlet>
 
-	<servlet-mapping>
-		<servlet-name>scalatra</servlet-name>
-		<url-pattern>/*</url-pattern>
-	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>scalatra</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>/static/*</url-pattern>
     </servlet-mapping>
-	
-	<servlet-mapping>
-                <servlet-name>default</servlet-name>
-                <url-pattern>/img/*</url-pattern>
-                <url-pattern>/css/*</url-pattern>
-                <url-pattern>/js/*</url-pattern>
-        </servlet-mapping>
+
+    <filter>
+        <filter-name>jsonfilter</filter-name>
+        <filter-class>no.bouvet.todolist.JsonFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>jsonfilter</filter-name>
+        <servlet-name>scalatra</servlet-name>
+    </filter-mapping>
+
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/img/*</url-pattern>
+        <url-pattern>/css/*</url-pattern>
+        <url-pattern>/js/*</url-pattern>
+    </servlet-mapping>
 </web-app>

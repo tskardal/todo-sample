@@ -9,3 +9,8 @@ a.mark-complete {
 a.mark-complete:hover {
     text-decoration: underline;
 }
+
+#addPanel {
+    width: 200px;
+    display: none;
+}

@@ -1,13 +1,67 @@
 - attributes("title") = "Todo - List of all tasks"
-- import no.bouvet.todolist._
--@ val tasks: List[Task]
 
-%a(href={uri("/add")}) Add
-%ul
-    - for(t <- tasks)
-        %li(class={if (t.complete) "complete" else "pending"})
-            #{t.title}
-            - if(!t.complete)
-                [
-                %a(class="mark-complete" href={uri("mark-complete/" + t.id)}) Complete
-                ]
+:!javascript
+    $(document).ready(function() {
+        var ul = $("#tasks");
+        function fetchTasks() {
+            $.get("#{uri("/tasks")}", function(tasks) {
+                ul.empty();
+                for(i in tasks) {
+                    var temp = tasks[i];
+                    var asdf = function(task){
+                        var t = task;
+                        var li = $("<li/>").html(t.title);
+                        if (!t.complete){
+                            $(document.createElement("a"))
+                                .attr("href","javascript:void(0)")
+                                .text("[Complete]")
+                                .appendTo(li)
+                                .click(function() {
+                                    $.ajax('#{uri("/mark-complete/")}' + t.id,
+                                        {
+                                            type: "PUT",
+                                            dataType: "json",
+                                            contentType: "application/json",
+                                            success: function(task) {
+                                                li.empty();
+                                                li.text(task.title);
+                                                li.addClass("complete");
+                                            },
+                                            error: function() {
+                                                alert("Error updating task status");
+                                            }
+                                        }
+                                    );
+                                });
+                        } else {
+                            li.addClass("complete");
+                        }
+                        ul.append(li);
+                    }(temp);
+                }
+            }, "json")
+            .error(function() { alert("Error fetching tasks"); });
+        }
+
+        fetchTasks();
+
+        $("#add").click(function() {
+           $("#addPanel").slideDown();
+        });
+        $("#addButton").click(function() {
+            $.post('#{uri("/add")}', {"title": $("#addPanel #titleField").val()}, function() {
+                $("#addPanel").slideUp();
+                fetchTasks();
+            });
+        });
+    });
+
+%a#add(href="javascript:void(0)") Add
+#addPanel
+    %fieldset
+        %legend Add new task
+        %label(for="title") Title
+        %input(id="titleField" name="title")
+        %input(id="addButton" type="button" value="Add")
+%ul#tasks
+    %li Loading tasks...

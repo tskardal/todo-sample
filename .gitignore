@@ -3,3 +3,4 @@ target/
 .idea_modules/
 derby.log
 *.swp
+.DS_Store

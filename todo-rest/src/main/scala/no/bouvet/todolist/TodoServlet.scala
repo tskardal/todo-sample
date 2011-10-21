@@ -1,28 +1,23 @@
 package no.bouvet.todolist
 
 import org.scalatra._
+import net.liftweb.json.Serialization.write
+import net.liftweb.json.{NoTypeHints, Serialization}
 import org.squeryl._
-import adapters.DerbyAdapter
 import PrimitiveTypeMode._
 import scalate.ScalateSupport
-import java.sql.DriverManager
 
 class TodoServlet extends ScalatraServlet with ScalateSupport with UrlSupport {
 
-  Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-  SessionFactory.concreteFactory = Some(()=>
-    Session.create(
-      DriverManager.getConnection("jdbc:derby:todolist;create=true"),
-      new DerbyAdapter
-    )
-  )
-
   get("/") {
-    // list tasks
-    SessionFactory.newSession.bindToCurrentThread
-    val tasks = from(TaskDB.tasks)(s => select(s)).toList
     contentType = "text/html"
-    scaml("index", "tasks" -> tasks)
+    scaml("index")
+  }
+
+  get("/tasks") {
+    val tasks = from(TaskDB.tasks)(s => select(s)).toList
+    implicit val formats = Serialization.formats(NoTypeHints)
+    write(tasks)
   }
 
   get("/add") {
@@ -31,29 +26,27 @@ class TodoServlet extends ScalatraServlet with ScalateSupport with UrlSupport {
   }
 
   post("/add") {
-    // add the task
-    SessionFactory.newSession.bindToCurrentThread
     transaction {
       val t = new Task(0, params("title"), false)
       TaskDB.tasks.insert(t)
     }
-    redirect(url("/"))
+    status(201)
   }
 
-  get("/mark-complete/:id") {
-    // mark as complete
+  put("/mark-complete/:id") {
     SessionFactory.newSession.bindToCurrentThread
     val taskId = params("id").toLong
+    var task = TaskDB.tasks.where(s => s.id === taskId).single
+    implicit val formats = Serialization.formats(NoTypeHints)
     transaction {
-      update(TaskDB.tasks) (t =>
-        where(t.id === taskId)
-        set(t.complete := true)
-      )
+      task.complete = true
+      TaskDB.tasks.update(task)
     }
-    redirect(url("/"))
+    write(task)
   }
 
   notFound {
+    contentType = "text/html"
     <h1>Not found</h1>
   }
 
