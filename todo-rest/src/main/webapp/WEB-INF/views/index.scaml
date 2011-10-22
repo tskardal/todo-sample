@@ -8,7 +8,7 @@
                 ul.empty();
                 for(i in tasks) {
                     var temp = tasks[i];
-                    var asdf = function(task){
+                    var scopeHack = function(task){
                         var t = task;
                         var li = $("<li/>").html(t.title);
                         if (!t.complete){
