@@ -18,9 +18,10 @@ class TodoServlet extends ScalatraServlet with ScalateSupport with UrlSupport {
   )
 
   get("/") {
-    // list tasks
-    SessionFactory.newSession.bindToCurrentThread
-    val tasks = from(TaskDB.tasks)(s => select(s)).toList
+    var tasks = List[Task]()
+    transaction {
+      tasks = from(TaskDB.tasks)(s => select(s)).toList
+    }
     contentType = "text/html"
     scaml("index", "tasks" -> tasks)
   }
@@ -31,8 +32,6 @@ class TodoServlet extends ScalatraServlet with ScalateSupport with UrlSupport {
   }
 
   post("/add") {
-    // add the task
-    SessionFactory.newSession.bindToCurrentThread
     transaction {
       val t = new Task(0, params("title"), false)
       TaskDB.tasks.insert(t)
@@ -41,8 +40,6 @@ class TodoServlet extends ScalatraServlet with ScalateSupport with UrlSupport {
   }
 
   get("/mark-complete/:id") {
-    // mark as complete
-    SessionFactory.newSession.bindToCurrentThread
     val taskId = params("id").toLong
     transaction {
       update(TaskDB.tasks) (t =>
@@ -54,6 +51,7 @@ class TodoServlet extends ScalatraServlet with ScalateSupport with UrlSupport {
   }
 
   notFound {
+    status(404)
     <h1>Not found</h1>
   }
 
