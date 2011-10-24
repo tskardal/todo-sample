@@ -15,7 +15,10 @@ class TodoServlet extends ScalatraServlet with ScalateSupport with UrlSupport {
   }
 
   get("/tasks") {
-    val tasks = from(TaskDB.tasks)(s => select(s)).toList
+    var tasks = List[Task]()
+    transaction {
+      tasks = from(TaskDB.tasks)(s => select(s)).toList
+    }
     implicit val formats = Serialization.formats(NoTypeHints)
     write(tasks)
   }
@@ -47,6 +50,7 @@ class TodoServlet extends ScalatraServlet with ScalateSupport with UrlSupport {
 
   notFound {
     contentType = "text/html"
+    status(404)
     <h1>Not found</h1>
   }
 

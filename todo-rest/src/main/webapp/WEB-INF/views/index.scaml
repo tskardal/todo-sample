@@ -52,6 +52,7 @@
             $.post('#{uri("/add")}', {"title": $("#addPanel #titleField").val()}, function() {
                 $("#addPanel").slideUp();
                 fetchTasks();
+                $("#titleField").val('');
             });
         });
     });

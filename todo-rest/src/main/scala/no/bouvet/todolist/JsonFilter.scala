@@ -15,7 +15,6 @@ class JsonFilter extends ScalatraFilter {
   )
 
   before() {
-    SessionFactory.newSession.bindToCurrentThread
     contentType = "application/json"
   }
 }

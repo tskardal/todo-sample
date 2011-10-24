@@ -1,8 +1,6 @@
 package no.bouvet.todolist
 
-import org.squeryl.adapters.DerbyAdapter
-import java.sql._
-import org.squeryl.{KeyedEntity, Session, SessionFactory, Schema}
+import org.squeryl.{KeyedEntity, Schema}
 
 class Task(val id: Long, var title: String, var complete: Boolean) extends KeyedEntity[Long]
 {
